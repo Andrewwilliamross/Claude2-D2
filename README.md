@@ -61,7 +61,13 @@ The soundboard includes 15 different R2-D2 sounds:
    - Open **System Settings** → **Notifications**
    - Find **Claude2-D2** in the list
    - Enable "Allow Notifications"
-   - Set Alert Style to "Banners" or "Alerts"
+   - Set Alert Style to "Banners" (recommended) or "Alerts"
+   - **Optional:** Disable "Show in Notification Center" to prevent clutter
+
+6. **(Optional)** Disable Terminal notifications:
+   - If you see unwanted Terminal session notifications
+   - Go to **System Settings** → **Notifications** → **Terminal**
+   - Disable "Allow Notifications" for Terminal
 
 That's it! Your R2-D2 will now beep with a custom R2-D2 icon whenever Claude Code sends you a notification.
 

@@ -26,7 +26,11 @@ fi
 
 # Show macOS notification
 if command -v terminal-notifier &> /dev/null; then
-    terminal-notifier -title "Claude2-D2" -message "Ready for you, Master Jedi" -sender com.claude.claude2d2
+    # Show notification with R2-D2 icon via app bundle sender
+    terminal-notifier -title "Claude2-D2" -message "Ready for you, Master Jedi" -sender com.claude.claude2d2 -group "claude2d2-notification" >/dev/null 2>&1 &
+
+    # Remove notification after 2 seconds to prevent clutter
+    (sleep 2 && terminal-notifier -remove "claude2d2-notification" >/dev/null 2>&1) &
 else
     # Fall back to osascript (requires Script Editor notification permissions)
     osascript -e "display notification \"Ready for you, Master Jedi\" with title \"Claude2-D2\""
