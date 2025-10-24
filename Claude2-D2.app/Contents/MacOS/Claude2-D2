@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Claude2-D2 macOS App
+# This app is used to send notifications with the R2-D2 icon
+
+# If called with arguments, send a notification
+if [ "$1" = "notify" ]; then
+    # Select a random sound file
+    SOUND_FILE=$(ls ~/.claude/notification-sounds/*.mp3 | sort -R | head -n 1)
+
+    # Play the sound
+    if [ -n "$SOUND_FILE" ]; then
+        afplay "$SOUND_FILE" &
+    fi
+
+    # Show notification
+    osascript -e 'display notification "Ready for you, Master Jedi" with title "Claude2-D2"'
+else
+    # Just show a test notification
+    osascript -e 'display notification "Claude2-D2 is installed!" with title "Claude2-D2"'
+fi
