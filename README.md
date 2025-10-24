@@ -38,8 +38,8 @@ The soundboard includes 15 different R2-D2 sounds:
 
 1. Clone or download this repository:
    ```bash
-   git clone https://github.com/yourusername/claude2-d2.git
-   cd claude2-d2
+   git clone https://github.com/Andrewwilliamross/Claude2-D2.git
+   cd Claude2-D2
    ```
 
 2. Install terminal-notifier (for notifications):
