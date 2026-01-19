@@ -70,6 +70,28 @@ echo "🎉 Installation complete!"
 echo ""
 echo "Your R2-D2 will now beep and boop when Claude Code sends notifications!"
 echo ""
+
+# Detect terminal and show appropriate setup instructions
+case "$TERM_PROGRAM" in
+    iTerm.app)
+        echo "🖥️  iTerm2 detected! For best experience:"
+        echo "   1. Open iTerm2 → Preferences → Profiles → Terminal"
+        echo "   2. Enable 'Send Growl/Notification Center alerts'"
+        echo "   3. Check System Settings → Notifications → iTerm2 is enabled"
+        echo ""
+        ;;
+    Apple_Terminal)
+        echo "🖥️  Terminal.app detected!"
+        echo "   Make sure notifications are enabled in System Settings → Notifications → Claude2-D2"
+        echo ""
+        ;;
+    *)
+        echo "🖥️  Terminal: $TERM_PROGRAM"
+        echo "   Claude2-D2 will use terminal-notifier for notifications"
+        echo ""
+        ;;
+esac
+
 echo "To test the soundboard, run:"
 echo "  ~/.claude/notification-hook.sh"
 echo ""

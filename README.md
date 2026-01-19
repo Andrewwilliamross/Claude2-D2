@@ -14,6 +14,8 @@ A custom notification soundboard for [Claude Code](https://claude.com/claude-cod
 - **Themed Notifications** - "Ready for you, Master Jedi" message
 - **Easy Installation** - Automated setup scripts
 - **Debug Logging** - Optional logging for troubleshooting
+- **iTerm2 Support** - Native iTerm2 notification integration via escape sequences
+- **Terminal Auto-Detection** - Automatically detects Terminal.app, iTerm2, and other terminals
 
 ## 🔊 Included Sounds
 
@@ -70,6 +72,29 @@ The soundboard includes 15 different R2-D2 sounds:
    - Disable "Allow Notifications" for Terminal
 
 That's it! Your R2-D2 will now beep with a custom R2-D2 icon whenever Claude Code sends you a notification.
+
+### iTerm2 Setup
+
+If you're using iTerm2, Claude2-D2 will automatically detect it and use iTerm2's native notification system. For the best experience:
+
+1. **Enable iTerm2 Notifications:**
+   - Open iTerm2 → **Preferences** (⌘,) → **Profiles** → **Terminal**
+   - Check **"Send Growl/Notification Center alerts"**
+   - Or enable notifications via: **Preferences** → **General** → **Notifications**
+
+2. **System Notifications:**
+   - Open **System Settings** → **Notifications**
+   - Find **iTerm** (or **iTerm2**) in the list
+   - Enable "Allow Notifications"
+   - Set Alert Style to "Banners" (recommended)
+
+3. **Shell Integration (Optional):**
+   - For enhanced notifications, install iTerm2 shell integration:
+   ```bash
+   curl -L https://iterm2.com/shell_integration/install_shell_integration.sh | bash
+   ```
+
+Claude2-D2 will now send both iTerm2 native notifications (via escape sequences) and system notifications for full notification center integration.
 
 ### Manual Installation
 
@@ -228,6 +253,19 @@ chmod +x scripts/*.sh
 1. Verify your `~/.claude/settings.json` has the correct hook configuration
 2. Restart Claude Code after updating settings
 3. Check that the hook path is correct: `~/.claude/notification-hook.sh`
+
+### iTerm2 notifications not working
+
+1. Verify iTerm2 is detected: `echo $TERM_PROGRAM` should output `iTerm.app`
+2. Check iTerm2 notification settings:
+   - Open iTerm2 → **Preferences** → **Profiles** → **Terminal**
+   - Ensure **"Send Growl/Notification Center alerts"** is enabled
+3. Check System Settings → Notifications → iTerm2 is enabled
+4. View debug log to confirm detection: `tail ~/.claude/hook-debug.log`
+5. Test iTerm2 escape sequence manually:
+   ```bash
+   printf '\033]9;Test notification\007'
+   ```
 
 ## 🤝 Contributing
 
