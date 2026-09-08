@@ -232,6 +232,11 @@ def emit(status):
     """Banner: title = project, line 2 = chat title (fallback Win/Tab).
     Status text (permission ask etc.) takes the message slot when present;
     otherwise the chat title rides there since -message is mandatory."""
+    # Clicking a banner launches this droid's app bundle, which jumps to the
+    # tab recorded here (macOS runs the sender app on click; the app scripts
+    # read click-<droid> and exec droid-focus.sh)
+    if term_uuid:
+        write_state(f"click-{droid_id}", term_uuid)
     tt = tab_title() or loc
     subtitle, message = (tt, status) if status else ("", tt or project)
     print("notify")
