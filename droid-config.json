@@ -1,0 +1,35 @@
+{
+  "droids": {
+    "r2d2": {
+      "name": "R2-D2",
+      "title": "R2-D2",
+      "message": "Ready for you, Master Jedi",
+      "sounds_dir": "r2d2",
+      "icon": "r2d2-icon.png"
+    },
+    "ig11": {
+      "name": "IG-11",
+      "title": "IG-11",
+      "message": "Ready to nurse and protect",
+      "sounds_dir": "ig11",
+      "icon": "ig11-icon.png"
+    },
+    "bd1": {
+      "name": "BD-1",
+      "title": "BD-1",
+      "message": "Ready to explore, friend!",
+      "sounds_dir": "bd1",
+      "icon": "bd1-icon.png"
+    }
+  },
+  "assignment_order": [
+    "r2d2",
+    "ig11",
+    "bd1"
+  ],
+  "default_droid": "r2d2",
+  "min_turn_seconds": 30,
+  "idle_suppress_seconds": 150,
+  "idle_repeat_cooldown_seconds": 600,
+  "permission_repeat_cooldown_seconds": 300
+}
