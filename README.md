@@ -1,36 +1,58 @@
 # Claude2-D2 🤖
 
-> Give your Claude Code notifications that signature R2-D2 charm!
+> Give your Claude Code notifications that signature droid charm!
 
-A custom notification soundboard for [Claude Code](https://claude.com/claude-code) that plays random R2-D2 sound effects whenever Claude needs your attention. Perfect for Star Wars fans who want their coding assistant to sound like everyone's favorite astromech droid!
+A multi-droid notification soundboard for [Claude Code](https://claude.com/claude-code) that plays random droid sound effects whenever Claude needs your attention. Choose from R2-D2, BD-1, IG-11, or add your own droids!
 
 ## 🎵 Features
 
-- **15 R2-D2 Sound Effects** - Beeps, boops, whistles, and more!
+- **Multiple Droid Personas** - R2-D2, BD-1, IG-11, and more!
+- **Per-Project Assignment** - Each Claude Code project gets its own unique droid
+- **Auto-Assignment** - Droids are automatically assigned round-robin to new projects
 - **Random Playback** - Each notification plays a different random sound
 - **Silent Audio Playback** - Uses `afplay` with no UI popup
-- **Custom R2-D2 Icon** - Beautiful R2-D2 icon appears in notifications
+- **Custom Droid Icons** - Beautiful droid icons appear in notifications
 - **macOS App Bundle** - Custom Claude2-D2 app for proper notification branding
-- **Themed Notifications** - "Ready for you, Master Jedi" message
+- **Themed Notifications** - Each droid has its own message
+- **Droid Manager Utility** - CLI tool to manage droid assignments
 - **Easy Installation** - Automated setup scripts
 - **Debug Logging** - Optional logging for troubleshooting
-- **iTerm2 Support** - Native iTerm2 notification integration via escape sequences
+- **iTerm2 Support** - Native iTerm2 notification integration
 - **Terminal Auto-Detection** - Automatically detects Terminal.app, iTerm2, and other terminals
 
-## 🔊 Included Sounds
+## 🆕 What's New in v2
 
-The soundboard includes 15 different R2-D2 sounds:
-- `r2d2-sing-sound-effect.mp3` - The signature R2-D2 singing
-- `acknowledged.mp3` & `acknowledged-2.mp3` - Confirmation beeps
-- `chat.mp3` - Communication chirps
-- `excited.mp3` & `excited-2.mp3` - Happy beeps
-- `worried.mp3` - Concerned whistles
-- Plus 8 more numbered sound effects (`6.mp3`, `7.mp3`, `8.mp3`, `11.mp3`, `13.mp3`, `14.mp3`, `15.mp3`, `22.mp3`)
+v2 rewrites the hook to actually read the JSON payload Claude Code sends, so notifications tell you *which* session wants you instead of playing a generic chirp:
+
+- **Context-aware banners** — project name, the terminal/chat title (read live from iTerm2), and the agent + model (e.g. `Claude Code - Opus 5`), with a per-AI color swatch (Claude Code orange, Codex white, Grok black, Prime-Agent purple)
+- **Three hook events** — `Stop` announces finished turns, `Notification` handles permission requests and idle reminders, `UserPromptSubmit` tracks turn timing (see `settings.json.example`)
+- **Smart filtering** — quick interactive turns (< `min_turn_seconds`, default 30s) stay silent; the redundant 60s idle echo after a finished turn is suppressed; repeated idle/permission reminders are rate-limited per session (`idle_repeat_cooldown_seconds` / `permission_repeat_cooldown_seconds` in `droid-config.json`)
+- **Semantic sounds** — finish, question, and idle events pick from different sound categories by filename prefix (`acknowledged`/`excited`/`happy`, `question`/`worried`, `chat`/`neutral`)
+- **Delivery tracing & dry-run** — every event logs its decision to `~/.claude/hook-debug.log` (auto-rotated); `DROID_DRY_RUN=1` exercises the full pipeline without sound or banners
+- **Click-to-focus helper** — `droid-focus.sh` jumps to the iTerm2 tab a notification came from (optional; requires enabling terminal-notifier banners in System Settings, since macOS allows either the droid icon or a click action, not both)
+
+## 🤖 Included Droids
+
+### R2-D2 (15 sounds)
+The classic astromech droid! Includes beeps, boops, whistles, and more.
+- Message: "Ready for you, Master Jedi"
+- Sounds: `acknowledged`, `excited`, `chat`, `worried`, and more
+
+### BD-1 (14 sounds)
+The adorable explorer droid from Jedi: Fallen Order!
+- Message: "Beep boop!"
+- Sounds: `happy`, `surprise`, `alert`, `success`, `neutral`, and more
+
+### IG-11 (user-provided)
+The reformed bounty hunter droid from The Mandalorian.
+- Message: "I am fulfilling my base function"
+- Sounds: Add your own IG-11 sounds!
 
 ## 📋 Requirements
 
 - **macOS** (uses afplay and terminal-notifier)
 - **Claude Code** installed
+- **Python 3** (for configuration management)
 - **Bash** shell (default on macOS)
 - **Homebrew** (for installing terminal-notifier)
 
@@ -64,88 +86,88 @@ The soundboard includes 15 different R2-D2 sounds:
    - Find **Claude2-D2** in the list
    - Enable "Allow Notifications"
    - Set Alert Style to "Banners" (recommended) or "Alerts"
-   - **Optional:** Disable "Show in Notification Center" to prevent clutter
 
-6. **(Optional)** Disable Terminal notifications:
-   - If you see unwanted Terminal session notifications
-   - Go to **System Settings** → **Notifications** → **Terminal**
-   - Disable "Allow Notifications" for Terminal
+That's it! Your droids will now beep and boop when Claude Code sends notifications!
 
-That's it! Your R2-D2 will now beep with a custom R2-D2 icon whenever Claude Code sends you a notification.
+## 🎮 Managing Droids
 
-### iTerm2 Setup
+Use the droid manager to control which droid is assigned to each project:
 
-If you're using iTerm2, Claude2-D2 will automatically detect it and use iTerm2's native notification system. For the best experience:
+```bash
+# List all droids and their current assignments
+~/.claude/droid-manager.sh list
 
-1. **Enable iTerm2 Notifications:**
-   - Open iTerm2 → **Preferences** (⌘,) → **Profiles** → **Terminal**
-   - Check **"Send Growl/Notification Center alerts"**
-   - Or enable notifications via: **Preferences** → **General** → **Notifications**
+# Show the current project's droid
+~/.claude/droid-manager.sh current
 
-2. **System Notifications:**
-   - Open **System Settings** → **Notifications**
-   - Find **iTerm** (or **iTerm2**) in the list
-   - Enable "Allow Notifications"
-   - Set Alert Style to "Banners" (recommended)
+# Assign a specific droid to the current project
+~/.claude/droid-manager.sh assign bd1
 
-3. **Shell Integration (Optional):**
-   - For enhanced notifications, install iTerm2 shell integration:
+# Remove assignment (will auto-assign on next notification)
+~/.claude/droid-manager.sh unassign
+
+# Reset all project assignments
+~/.claude/droid-manager.sh reset
+
+# Test the notification with current droid
+~/.claude/droid-manager.sh test
+```
+
+### Auto-Assignment
+
+When you use Claude Code in a new project, a droid is automatically assigned using round-robin selection from available droids. This means each project gets a unique droid companion!
+
+### Manual Assignment
+
+If you want a specific droid for a project:
+```bash
+cd /path/to/your/project
+~/.claude/droid-manager.sh assign r2d2
+```
+
+## 📦 Adding Your Own Droids
+
+### Adding IG-11 Sounds
+
+The IG-11 droid is pre-configured but needs sound files:
+
+1. Find IG-11 sound clips (MP3 or M4A format)
+2. Copy them to the IG-11 sounds directory:
    ```bash
-   curl -L https://iterm2.com/shell_integration/install_shell_integration.sh | bash
+   cp your-ig11-sounds/*.mp3 ~/.claude/notification-sounds/ig11/
+   ```
+3. Test with: `~/.claude/droid-manager.sh test`
+
+### Adding a New Droid
+
+1. Create a sounds directory:
+   ```bash
+   mkdir ~/.claude/notification-sounds/your-droid
    ```
 
-Claude2-D2 will now send both iTerm2 native notifications (via escape sequences) and system notifications for full notification center integration.
-
-### Manual Installation
-
-If you prefer to install manually:
-
-1. Install terminal-notifier:
+2. Add sound files (MP3 or M4A):
    ```bash
-   brew install terminal-notifier
+   cp your-sounds/*.mp3 ~/.claude/notification-sounds/your-droid/
    ```
 
-2. Copy sound files:
-   ```bash
-   mkdir -p ~/.claude/notification-sounds
-   cp sounds/*.mp3 ~/.claude/notification-sounds/
-   ```
-
-3. Copy the R2-D2 icon:
-   ```bash
-   cp r2d2-icon.png ~/.claude/r2d2-icon.png
-   ```
-
-4. Install the Claude2-D2 app:
-   ```bash
-   mkdir -p ~/Applications
-   cp -R Claude2-D2.app ~/Applications/
-   ```
-
-5. Copy the notification hook:
-   ```bash
-   cp scripts/notification-hook.sh ~/.claude/notification-hook.sh
-   chmod +x ~/.claude/notification-hook.sh
-   ```
-
-6. Add to your `~/.claude/settings.json`:
+3. Edit `~/.claude/droid-config.json` to add your droid:
    ```json
    {
-     "hooks": {
-       "Notification": [
-         {
-           "matcher": "",
-           "hooks": [
-             {
-               "type": "command",
-               "command": "~/.claude/notification-hook.sh"
-             }
-           ]
-         }
-       ]
-     }
+     "droids": {
+       "your-droid": {
+         "name": "Your Droid",
+         "title": "Your Droid",
+         "message": "Your custom message",
+         "sounds_dir": "your-droid",
+         "icon": "your-droid-icon.png"
+       }
+     },
+     "assignment_order": ["r2d2", "ig11", "bd1", "your-droid"],
+     "default_droid": "r2d2"
    }
    ```
+
+4. Optionally add an icon to `~/.claude/icons/`
 
 ## 🧪 Testing
 
@@ -155,42 +177,33 @@ Test the soundboard by running the notification hook directly:
 ~/.claude/notification-hook.sh
 ```
 
-You should hear a random R2-D2 sound and see a macOS notification with:
-- **Icon:** R2-D2 image (on the left)
-- **Title:** Claude2-D2
-- **Message:** Ready for you, Master Jedi
+Or use the droid manager:
+
+```bash
+~/.claude/droid-manager.sh test
+```
+
+You should hear a random droid sound and see a macOS notification.
 
 ## 🛠️ Customization
 
-### Change Notification Message
+### Change a Droid's Message
 
-Want a different message? Edit `~/.claude/notification-hook.sh` and change line 29:
-
-```bash
-terminal-notifier -title "Claude2-D2" -message "Your custom message here" -sender com.claude.claude2d2
-```
+Edit `~/.claude/droid-config.json` and change the `message` field for any droid.
 
 ### Disable Debug Logging
 
 By default, the hook logs debug information to `~/.claude/hook-debug.log`. To disable this:
 
 1. Edit `~/.claude/notification-hook.sh`
-2. Comment out or remove the logging lines (lines starting with `echo` and writing to `hook-debug.log`)
+2. Comment out or remove the logging lines
 
-### Add Your Own Sounds
+### Add More Sounds to a Droid
 
-Want to add more R2-D2 sounds or use different sounds entirely?
-
-1. Add `.mp3` files to `~/.claude/notification-sounds/`
-2. The hook will automatically include them in the random selection!
-
-### Change Playback Delay
-
-The default playback delay is 3 seconds. To adjust:
-
-1. Edit `~/.claude/notification-hook.sh`
-2. Find the line `delay 3`
-3. Change to your preferred delay (in seconds)
+Simply add `.mp3` or `.m4a` files to the droid's directory:
+```bash
+cp new-sound.mp3 ~/.claude/notification-sounds/r2d2/
+```
 
 ## 📁 Project Structure
 
@@ -200,44 +213,60 @@ Claude2-D2/
 ├── LICENSE                      # MIT License
 ├── .gitignore                   # Git ignore rules
 ├── settings.json.example        # Example Claude Code settings
-├── r2d2-icon.png               # R2-D2 icon for notifications
-├── Claude2-D2.app/             # macOS app bundle with R2-D2 icon
-│   └── Contents/
-│       ├── Info.plist          # App metadata
-│       ├── MacOS/
-│       │   └── Claude2-D2      # App executable
-│       └── Resources/
-│           └── AppIcon.icns    # R2-D2 icon file
-├── sounds/                      # R2-D2 sound files
-│   ├── r2d2-sing-sound-effect.mp3
-│   ├── acknowledged.mp3
-│   ├── acknowledged-2.mp3
-│   ├── chat.mp3
-│   ├── excited.mp3
-│   ├── excited-2.mp3
-│   ├── worried.mp3
-│   └── [8 more sound files]
-└── scripts/                     # Installation scripts
-    ├── install.sh              # Main installation script
-    ├── configure.sh            # Settings configuration script
-    └── notification-hook.sh    # The notification hook
+├── droid-config.json           # Droid definitions
+├── droid-assignments.json.template  # Assignment template
+├── Claude2-D2.app/             # macOS app bundle
+├── droids/                     # Droid sound packs
+│   ├── r2d2/                   # R2-D2 sounds (15 files)
+│   ├── bd1/                    # BD-1 sounds (14 files)
+│   └── ig11/                   # IG-11 sounds (user-provided)
+├── icons/                      # Droid icons
+│   └── r2d2-icon.png          # R2-D2 icon
+└── scripts/                    # Installation scripts
+    ├── install.sh             # Main installation script
+    ├── configure.sh           # Settings configuration script
+    ├── notification-hook.sh   # The notification hook
+    └── droid-manager.sh       # Droid management utility
+```
+
+### Installed Structure (~/.claude/)
+
+After installation:
+```
+~/.claude/
+├── notification-sounds/
+│   ├── r2d2/                  # R2-D2 sounds
+│   ├── bd1/                   # BD-1 sounds
+│   └── ig11/                  # IG-11 sounds
+├── icons/
+│   └── r2d2-icon.png         # Droid icons
+├── droid-config.json         # Droid definitions
+├── droid-assignments.json    # Project-to-droid mappings
+├── notification-hook.sh      # The notification hook
+├── droid-manager.sh          # Management utility
+└── settings.json             # Claude Code settings
 ```
 
 ## 🐛 Troubleshooting
 
 ### No sound is playing
 
-1. Verify sound files exist: `ls ~/.claude/notification-sounds/`
-2. Check that `afplay` works: `afplay ~/.claude/notification-sounds/excited.mp3`
+1. Verify sound files exist: `ls ~/.claude/notification-sounds/*/`
+2. Check that `afplay` works: `afplay ~/.claude/notification-sounds/r2d2/excited.mp3`
 3. Check debug log: `tail -f ~/.claude/hook-debug.log`
 4. Test the hook manually: `~/.claude/notification-hook.sh`
+
+### Wrong droid is playing
+
+1. Check current assignment: `~/.claude/droid-manager.sh current`
+2. Reassign if needed: `~/.claude/droid-manager.sh assign <droid-id>`
+3. Check assignments file: `cat ~/.claude/droid-assignments.json`
 
 ### No notification appearing
 
 1. Check that terminal-notifier is installed: `which terminal-notifier`
 2. Enable notifications for Claude2-D2 in System Settings → Notifications
 3. Make sure Do Not Disturb / Focus mode is not blocking notifications
-4. Check that the Claude2-D2 app is installed: `ls ~/Applications/Claude2-D2.app`
 
 ### Permission denied errors
 
@@ -245,6 +274,7 @@ Make sure the scripts are executable:
 
 ```bash
 chmod +x ~/.claude/notification-hook.sh
+chmod +x ~/.claude/droid-manager.sh
 chmod +x scripts/*.sh
 ```
 
@@ -254,24 +284,11 @@ chmod +x scripts/*.sh
 2. Restart Claude Code after updating settings
 3. Check that the hook path is correct: `~/.claude/notification-hook.sh`
 
-### iTerm2 notifications not working
-
-1. Verify iTerm2 is detected: `echo $TERM_PROGRAM` should output `iTerm.app`
-2. Check iTerm2 notification settings:
-   - Open iTerm2 → **Preferences** → **Profiles** → **Terminal**
-   - Ensure **"Send Growl/Notification Center alerts"** is enabled
-3. Check System Settings → Notifications → iTerm2 is enabled
-4. View debug log to confirm detection: `tail ~/.claude/hook-debug.log`
-5. Test iTerm2 escape sequence manually:
-   ```bash
-   printf '\033]9;Test notification\007'
-   ```
-
 ## 🤝 Contributing
 
 Contributions are welcome! Feel free to:
 
-- Add more R2-D2 sounds
+- Add more droid sound packs
 - Improve cross-platform compatibility
 - Add new features
 - Fix bugs
@@ -284,16 +301,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🙏 Acknowledgments
 
 - R2-D2 sound effects from the Star Wars franchise
+- BD-1 sounds from the [BD-1 Sounds Collection](https://github.com/Ssxpn/Rip-BD-1-sounds-Collection)
 - R2-D2 icon from [PNGMart](https://www.pngmart.com/image/170173)
 - Built for [Claude Code](https://claude.com/claude-code) by Anthropic
 - Inspired by the need to make coding more fun!
 
 ## ⭐ Show Your Support
 
-If you enjoy having R2-D2 as your coding companion, consider:
+If you enjoy having droid companions in your coding sessions, consider:
 - Starring this repository
 - Sharing it with other Star Wars fans
 - Contributing improvements
+- Adding new droid sound packs
 
 ---
 

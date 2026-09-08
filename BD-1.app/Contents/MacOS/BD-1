@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# BD-1 macOS App — notification identity for Claude Code droid banners.
+# macOS launches this when a BD-1 notification is clicked: jump to the
+# iTerm2 tab of this droid's most recent notification.
+
+UUID=$(cat ~/.claude/droid-state/click-bd1 2>/dev/null)
+if [ -n "$UUID" ] && [ -x ~/.claude/droid-focus.sh ]; then
+    exec ~/.claude/droid-focus.sh "$UUID"
+fi
+exit 0
